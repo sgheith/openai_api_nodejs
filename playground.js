@@ -1,4 +1,4 @@
-//console.log("Hello OpenAI API");
+console.log("Hello OpenAI API");
 
 const readline = require('readline')
 const { generateChatCompletion } = require('./controllers/chatCompletionController');
