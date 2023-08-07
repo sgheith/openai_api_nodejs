@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Completion</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: lightgrey;
+        }
+
+        .container {
+            background-color: darkgrey;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 150px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="text-center">
+            <img class="logo" src="logo.png" alt="Logo">
+            <h2>Chat Completion</h2>
+        </div>
+        <form id="chatForm">
+            <div class="form-group">
+                <label for="prompt">Enter your prompt:</label>
+                <input type="text" class="form-control" id="prompt" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
+        </form>
+        <div id="responseDiv" class="mt-3"></div>
+    </div>
+
+    <script>
+        document.getElementById('chatForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const promptText = document.getElementById('prompt').value.trim();
+            if (promptText === '') {
+                alert('Please enter a prompt.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            const promptInput = document.getElementById('prompt');
+            const responseDiv = document.getElementById('responseDiv');
+
+            // Disable form elements during API call
+            submitBtn.disabled = true;
+            promptInput.disabled = true;
+
+            // Show spinner while waiting for API response
+            responseDiv.innerHTML = '<div class="spinner-border text-primary" role="status"></div>';
+
+            fetch('http://localhost:4000/openai/intro/chatcompletion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_role_content: promptText }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Enable form elements after API response
+                    submitBtn.disabled = false;
+                    promptInput.disabled = false;
+
+                    // Update display div with API response content
+                    responseDiv.innerHTML = `<strong>Response:</strong> ${data.content}`;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    responseDiv.innerHTML = '<div class="alert alert-danger">Error occurred. Please try again later.</div>';
+                });
+        });
+    </script>
+</body>
+
+</html>
