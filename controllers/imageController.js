@@ -3,20 +3,24 @@ const fs = require('fs');
 
 const openai = require('../config/openaiConfig')
 
-const generateImage = async (prompt) => {
+const generateImage = async (req, res) => {
 
   const image = await openai.createImage({
-    prompt: prompt,
+    prompt: req.body.prompt,
     n: 1,
     size: '1024x1024'
   })
 
-  console.log(image.data.data[0].url)
+  //console.log(image.data.data[0].url)
 
   const imageUrl = image.data.data[0].url;
   const outputPath = './images/image.png';
   
-  saveImageToPNG(imageUrl, outputPath);
+  //saveImageToPNG(imageUrl, outputPath);
+
+  res.status(200).json({
+    url: image.data.data[0].url
+  })
 }
 
 async function saveImageToPNG(imageUrl, outputPath) {

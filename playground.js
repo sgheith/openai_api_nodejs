@@ -17,7 +17,6 @@ const rl = readline.createInterface({
 
 ////////////// IMAGE - START /////////////////////
 
-rl.question("Image description: \n",  
-		(prompt) => generateImage(prompt)
-		)
+rl.question("Image description: \n",  (image_desc) => generateImage(image_desc))
+
 ////////////// IMAGE - END /////////////////
