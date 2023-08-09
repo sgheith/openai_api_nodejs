@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Variation</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: lightgrey;
+    }
+    .container {
+      background-color: darkgrey;
+      padding: 20px;
+    }
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #000;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="text-center">
+      <img src="logo.png" alt="Logo">
+      <h1>Image Variation</h1>
+    </div>
+
+    <form id="imageForm" class="mt-4">
+      <div class="form-group">
+        <label for="imageInput">Select Image (PNG only):</label>
+        <input type="file" accept="image/png" class="form-control-file" id="imageInput" required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="submitBtn">Generate Variation</button>
+    </form>
+
+    <div id="imageContainer" class="mt-4 text-center" style="display: none;">
+      <h3>Generated Variation:</h3>
+      <img id="generatedImage" src="" alt="Generated Variation" style="max-width: 100%;">
+    </div>
+
+    <div id="loadingSpinner" class="text-center mt-4" style="display: none;">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and Vanilla JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Function to reset the image container and hide the generated image
+    function resetImageContainer() {
+      generatedImage.src = '';
+      imageContainer.style.display = 'none';
+    }
+
+    const form = document.getElementById('imageForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const imageInput = document.getElementById('imageInput');
+    const imageContainer = document.getElementById('imageContainer');
+    const generatedImage = document.getElementById('generatedImage');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const file = imageInput.files[0];
+      if (!file || !file.type.includes('image/png')) {
+        alert('Please select a PNG image.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      imageInput.disabled = true;
+      loadingSpinner.style.display = 'block';
+      resetImageContainer(); // Reset the image container and hide the generated image
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const base64EncodedImage = reader.result.split(',')[1];
+        const requestBody = {
+          image: base64EncodedImage
+        };
+
+        fetch('http://localhost:4000/openai/intro/image_variation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        })
+        .then(response => response.json())
+        .then(data => {
+          generatedImage.src = data.url;
+          imageContainer.style.display = 'block';
+        })
+        .catch(error => console.error('Error:', error))
+        .finally(() => {
+          submitBtn.disabled = false;
+          imageInput.disabled = false;
+          loadingSpinner.style.display = 'none';
+        });
+      };
+
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>

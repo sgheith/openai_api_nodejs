@@ -23,20 +23,28 @@ const generateImage = async (req, res) => {
   })
 }
 
-const generateImageVariation = async (image) => {
+const generateImageVariation = async (req, res) => {
 
   const image_variation = await openai.createImageVariation(
-      fs.createReadStream(image),
+      fs.createReadStream(saveDecodedImage(req.body.image, './images/image.png')),
       1,
       "1024x1024"
     );
 
-  console.log(image_variation.data.data[0].url)
+  //console.log(image_variation.data.data[0].url)
 
-  const imageUrl = image_variation.data.data[0].url;
-  const outputPath = './images/image_variation.png';
+  res.status(200).json({
+    url: image_variation.data.data[0].url
+  })
+}
 
-  saveImageToPNG(imageUrl, outputPath);
+function saveDecodedImage(jsonData, fileName) {
+  const base64Image = jsonData;
+  const imageBuffer = Buffer.from(base64Image, 'base64');
+
+  fs.writeFileSync(fileName, imageBuffer);
+
+  return fileName;
 }
 
 async function saveImageToPNG(imageUrl, outputPath) {
