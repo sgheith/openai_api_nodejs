@@ -38,6 +38,24 @@ const generateImageVariation = async (req, res) => {
   })
 }
 
+const generateImageEdit = async (prompt, image, mask) => {
+
+  const image_edit = await openai.createImageEdit(
+      fs.createReadStream(image),
+      prompt,
+      fs.createReadStream(mask),
+      1,
+      "1024x1024"
+    );
+
+    console.log(image_edit.data.data[0].url)
+  
+   const imageUrl = image_edit.data.data[0].url;
+    const outputPath = './images/image_edit_output.png';
+
+    saveImageToPNG(imageUrl, outputPath);
+  }
+
 function saveDecodedImage(jsonData, fileName) {
   const base64Image = jsonData;
   const imageBuffer = Buffer.from(base64Image, 'base64');
@@ -57,4 +75,4 @@ async function saveImageToPNG(imageUrl, outputPath) {
   }
 }
 
-module.exports = { generateImage, generateImageVariation }
+module.exports = { generateImage, generateImageVariation, generateImageEdit}

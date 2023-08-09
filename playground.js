@@ -2,7 +2,7 @@
 
 const readline = require('readline')
 const { generateChatCompletion } = require('./controllers/chatCompletionController');
-const { generateImage, generateImageVariation } = require('./controllers/imageController');
+const { generateImage, generateImageVariation, generateImageEdit } = require('./controllers/imageController');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -18,6 +18,11 @@ const rl = readline.createInterface({
 ////////////// IMAGE - START /////////////////////
 
 //rl.question("Image description: \n",  (image_desc) => generateImage(image_desc))
-generateImageVariation('./images/image.png');
+//generateImageVariation('./images/image.png');
+
+//A sunlit indoor lounge area with a pool containing star
+rl.question("Enter Output Image description: \n",  
+		(image_desc) => generateImageEdit(image_desc, './images/image_edit_original.png', './images/image_edit_mask.png')
+	)
 
 ////////////// IMAGE - END /////////////////
