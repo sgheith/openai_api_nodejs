@@ -2,7 +2,7 @@
 
 const readline = require('readline')
 const { generateChatCompletion } = require('./controllers/chatCompletionController');
-const { generateImage } = require('./controllers/imageController');
+const { generateImage, generateImageVariation } = require('./controllers/imageController');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -17,6 +17,7 @@ const rl = readline.createInterface({
 
 ////////////// IMAGE - START /////////////////////
 
-rl.question("Image description: \n",  (image_desc) => generateImage(image_desc))
+//rl.question("Image description: \n",  (image_desc) => generateImage(image_desc))
+generateImageVariation('./images/image.png');
 
 ////////////// IMAGE - END /////////////////

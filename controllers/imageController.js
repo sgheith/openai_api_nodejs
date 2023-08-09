@@ -23,6 +23,22 @@ const generateImage = async (req, res) => {
   })
 }
 
+const generateImageVariation = async (image) => {
+
+  const image_variation = await openai.createImageVariation(
+      fs.createReadStream(image),
+      1,
+      "1024x1024"
+    );
+
+  console.log(image_variation.data.data[0].url)
+
+  const imageUrl = image_variation.data.data[0].url;
+  const outputPath = './images/image_variation.png';
+
+  saveImageToPNG(imageUrl, outputPath);
+}
+
 async function saveImageToPNG(imageUrl, outputPath) {
   try {
     const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
@@ -33,4 +49,4 @@ async function saveImageToPNG(imageUrl, outputPath) {
   }
 }
 
-module.exports = { generateImage }
+module.exports = { generateImage, generateImageVariation }
