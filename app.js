@@ -2,6 +2,7 @@ const express = require('express')
 
 const { generateChatCompletion } = require('./controllers/chatCompletionController');
 const { generateImage, generateImageVariation, generateImageEdit } = require('./controllers/imageController');
+const { generateTranscription, generateTranslation } = require('./controllers/audioController');
 
 
 // app setup
@@ -18,3 +19,5 @@ app.post('/openai/intro/chatcompletion', generateChatCompletion)
 app.post('/openai/intro/image_generate', generateImage)
 app.post('/openai/intro/image_variation', generateImageVariation)
 app.post('/openai/intro/image_edit', generateImageEdit)
+app.post('/openai/intro/audio_transcribe', generateTranscription)
+app.post('/openai/intro/audio_translate', generateTranslation)

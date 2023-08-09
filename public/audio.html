@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Transcription and Translation</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: lightgrey;
+    }
+    .container {
+      background-color: darkgrey;
+      padding: 20px;
+      margin-top: 30px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="text-center">
+      <img src="logo.png" alt="Logo" width="80" height="80">
+      <h1>Audio Transcription and Translation</h1>
+    </header>
+    <form id="audioForm" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="audioFile" class="form-label">Select MP3 Audio File:</label>
+        <input type="file" class="form-control" id="audioFile" accept=".mp3" required>
+      </div>
+      <div class="form-check mb-3">
+        <input type="checkbox" class="form-check-input" id="translateCheckbox">
+        <label class="form-check-label" for="translateCheckbox">Translate</label>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <div id="outputDiv" class="mt-4"></div>
+  </div>
+
+  <script>
+    document.getElementById("audioForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const audioFile = document.getElementById("audioFile").files[0];
+      const translateCheckbox = document.getElementById("translateCheckbox").checked;
+
+      if (!audioFile) {
+        alert("Please select an MP3 audio file.");
+        return;
+      }
+
+      const fileName = audioFile.name;
+      const fileExtension = fileName.split(".").pop().toLowerCase();
+
+      if (fileExtension !== "mp3") {
+        alert("Please select a valid MP3 audio file.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const audioData = reader.result.split(",")[1];
+        const apiUrl = translateCheckbox
+          ? "http://localhost:4000/openai/intro/audio_translate"
+          : "http://localhost:4000/openai/intro/audio_transcribe";
+
+        fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ audio_file: audioData })
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("outputDiv").textContent = data.text;
+          })
+          .catch((error) => {
+            console.error("API Error:", error);
+            document.getElementById("outputDiv").textContent =
+              "Error occurred while processing the audio.";
+          })
+          .finally(() => {
+            document.getElementById("audioFile").value = "";
+            document.getElementById("translateCheckbox").checked = false;
+            document.getElementById("audioFile").disabled = false;
+            document.getElementById("translateCheckbox").disabled = false;
+            document.querySelector("button[type='submit']").disabled = false;
+          });
+
+        document.getElementById("audioFile").disabled = true;
+        document.getElementById("translateCheckbox").disabled = true;
+        document.querySelector("button[type='submit']").disabled = true;
+        document.getElementById("outputDiv").textContent =
+          "Transcribing/Translating... Please wait...";
+      };
+
+      reader.readAsDataURL(audioFile);
+    });
+  </script>
+</body>
+</html>
