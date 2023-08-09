@@ -1,7 +1,7 @@
 const express = require('express')
 
 const { generateChatCompletion } = require('./controllers/chatCompletionController');
-const { generateImage, generateImageVariation } = require('./controllers/imageController');
+const { generateImage, generateImageVariation, generateImageEdit } = require('./controllers/imageController');
 
 
 // app setup
@@ -17,3 +17,4 @@ app.use(express.static('public'))
 app.post('/openai/intro/chatcompletion', generateChatCompletion)
 app.post('/openai/intro/image_generate', generateImage)
 app.post('/openai/intro/image_variation', generateImageVariation)
+app.post('/openai/intro/image_edit', generateImageEdit)

@@ -21,8 +21,6 @@ const rl = readline.createInterface({
 //generateImageVariation('./images/image.png');
 
 //A sunlit indoor lounge area with a pool containing star
-rl.question("Enter Output Image description: \n",  
-		(image_desc) => generateImageEdit(image_desc, './images/image_edit_original.png', './images/image_edit_mask.png')
-	)
+rl.question("Enter Output Image description: \n",  (image_desc) => generateImageEdit(image_desc, './images/image_edit_original.png', './images/image_edit_mask.png'))
 
 ////////////// IMAGE - END /////////////////
