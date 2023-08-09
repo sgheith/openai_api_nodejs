@@ -3,6 +3,7 @@
 const readline = require('readline')
 const { generateChatCompletion } = require('./controllers/chatCompletionController');
 const { generateImage, generateImageVariation, generateImageEdit } = require('./controllers/imageController');
+const { generateTranscription, generateTranslation } = require('./controllers/audioController');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -21,6 +22,14 @@ const rl = readline.createInterface({
 //generateImageVariation('./images/image.png');
 
 //A sunlit indoor lounge area with a pool containing star
-rl.question("Enter Output Image description: \n",  (image_desc) => generateImageEdit(image_desc, './images/image_edit_original.png', './images/image_edit_mask.png'))
+//rl.question("Enter Output Image description: \n",  (image_desc) => generateImageEdit(image_desc, './images/image_edit_original.png', './images/image_edit_mask.png'))
 
 ////////////// IMAGE - END /////////////////
+
+////////////// AUDIO - START /////////////////////
+
+//generateTranscription("./audio/rr.mp3")
+generateTranslation("./audio/german.mp3")
+//generateTranslation("./audio/Fairouz.mp3")
+
+////////////// AUDIO - END /////////////////////

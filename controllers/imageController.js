@@ -31,14 +31,14 @@ const generateImageVariation = async (req, res) => {
       "1024x1024"
     );
 
-  //console.log(image_variation.data.data[0].url)
+    //console.log(image_variation.data.data[0].url)
 
-  res.status(200).json({
-    url: image_variation.data.data[0].url
-  })
-}
+    res.status(200).json({
+      url: image_variation.data.data[0].url
+    })
+  }
 
-const generateImageEdit = async (req , res) => {
+const generateImageEdit = async (req, res) => {
 
   const image_edit = await openai.createImageEdit(
       fs.createReadStream(saveDecodedImage(req.body.image, './images/image.png')),
@@ -55,9 +55,9 @@ const generateImageEdit = async (req , res) => {
 
     //saveImageToPNG(imageUrl, outputPath);
     
-  res.status(200).json({
-    url: image_edit.data.data[0].url
-  })
+    res.status(200).json({
+      url: image_edit.data.data[0].url
+    })
   }
 
 function saveDecodedImage(jsonData, fileName) {
